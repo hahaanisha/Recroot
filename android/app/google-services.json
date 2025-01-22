@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "148311348934",
+    "project_id": "recroot-66242",
+    "storage_bucket": "recroot-66242.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148311348934:android:8f91138993a9029a5f69c7",
+        "android_client_info": {
+          "package_name": "com.example.recroot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbeB2K7n4FSl0_-aPPkG9RZQwaDJ0Iitw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
