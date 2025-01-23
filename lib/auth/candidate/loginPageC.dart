@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:recroot/auth/interviewer/loginPageI.dart';
+import 'package:recroot/auth/recruiter/loginPageR.dart';
 
 import '../../screens/recruiter/HomePageR.dart';
 import 'SignUpC.dart';
@@ -156,7 +158,7 @@ class _LoginPageCState extends State<LoginPageC> {
                   TextButton(
                     onPressed: () {
                       // Navigate to the registration page
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => SignUpPageC(),
@@ -166,6 +168,58 @@ class _LoginPageCState extends State<LoginPageC> {
                     },
                     child: const Text(
                       'Register now',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Wanna to add your own company',
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // Navigate to the registration page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginPager(),
+                        ),
+                      );
+
+                    },
+                    child: const Text(
+                      'LOGIN as Company',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Taking an Interview',
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // Navigate to the registration page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginPageI(),
+                        ),
+                      );
+
+                    },
+                    child: const Text(
+                      'LOGIN as Interviewer',
                       style: TextStyle(color: Colors.blue),
                     ),
                   ),

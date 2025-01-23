@@ -147,31 +147,6 @@ class _LoginPageIState extends State<LoginPageI> {
                 ),
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'New Member?',
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // Navigate to the registration page
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignUpPageI(),
-                        ),
-                      );
-
-                    },
-                    child: const Text(
-                      'Register now',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

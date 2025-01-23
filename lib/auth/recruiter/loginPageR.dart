@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../screens/recruiter/AddJobPageR.dart';
 import '../../screens/recruiter/HomePageR.dart';
 import 'signUpR.dart';
 
@@ -31,7 +32,7 @@ class _LoginPagerState extends State<LoginPager> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Homepager(UID: userUID),
+            builder: (context) => AddJobPage(),
           ),
         );
       }
