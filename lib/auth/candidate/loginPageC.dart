@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:recroot/auth/interviewer/loginPageI.dart';
 import 'package:recroot/auth/recruiter/loginPageR.dart';
 
+import '../../screens/candidate/HomePageC.dart';
 import '../../screens/recruiter/HomePageR.dart';
 import 'SignUpC.dart';
 
@@ -34,7 +35,7 @@ class _LoginPageCState extends State<LoginPageC> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Homepager(UID: userUID),
+            builder: (context) => Homepagec(UID: userUID),
           ),
         );
       }
