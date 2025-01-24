@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart'; // For date formatting and calculations
+import 'package:file_picker/file_picker.dart'; // For file selection
+import 'dart:io'; // For working with files
 
 class Homepagec extends StatelessWidget {
   final String UID;
@@ -11,11 +14,14 @@ class Homepagec extends StatelessWidget {
     final snapshot = await dbRef.get();
     if (snapshot.exists) {
       List<Map<String, dynamic>> jobs = [];
-      snapshot.children.forEach((job) {
-        final jobData = job.value as Map<dynamic, dynamic>;
-        jobs.add({
-          'key': job.key, // To uniquely identify the job for editing or deleting
-          ...jobData,
+      snapshot.children.forEach((userJobs) {
+        userJobs.children.forEach((job) {
+          final jobData = job.value as Map<dynamic, dynamic>;
+          jobs.add({
+            'key': job.key,
+            'companyUID': userJobs.key,// Unique identifier for the job
+            ...jobData,
+          });
         });
       });
       return jobs;
@@ -24,26 +30,117 @@ class Homepagec extends StatelessWidget {
     }
   }
 
-  void _deleteJob(String jobKey, BuildContext context) async {
-    final DatabaseReference dbRef = FirebaseDatabase.instance.ref('jobs/$UID/$jobKey');
-    await dbRef.remove();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Job deleted successfully.')));
+  Future<void> _applyForJob(BuildContext context, String companyUID, String jobKey) async {
+    final TextEditingController whySuitableController = TextEditingController();
+    final TextEditingController skillsController = TextEditingController();
+    final TextEditingController experienceController = TextEditingController();
+    File? selectedResume;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Apply for Job"),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: whySuitableController,
+                  decoration: const InputDecoration(
+                    labelText: "Why are you suitable for this job?",
+                  ),
+                ),
+                TextField(
+                  controller: skillsController,
+                  decoration: const InputDecoration(
+                    labelText: "What relevant skills do you have?",
+                  ),
+                ),
+                TextField(
+                  controller: experienceController,
+                  decoration: const InputDecoration(
+                    labelText: "Any past experience related to this job?",
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    final result = await FilePicker.platform.pickFiles(
+                      type: FileType.custom,
+                      allowedExtensions: ['pdf', 'doc', 'docx'],
+                    );
+                    if (result != null && result.files.single.path != null) {
+                      selectedResume = File(result.files.single.path!);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Resume Selected: ${result.files.single.name}")),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("No file selected.")),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.upload_file),
+                  label: const Text("Upload Resume"),
+                ),
+                if (selectedResume != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    "Selected File: ${selectedResume!.path.split('/').last}",
+                    style: const TextStyle(color: Colors.green),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (selectedResume == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Please upload your resume before submitting.")),
+                  );
+                  return;
+                }
+
+                final DatabaseReference dbRef = FirebaseDatabase.instance.ref(
+                    'applications/$companyUID/$jobKey');
+                await dbRef.push().set({
+                  'UID': UID,
+                  'whySuitable': whySuitableController.text,
+                  'skills': skillsController.text,
+                  'experience': experienceController.text,
+                  'resumePath': selectedResume!.path,
+                  'appliedAt': DateTime.now().toIso8601String(),
+                });
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Applied successfully!")),
+                );
+              },
+              child: const Text("Submit"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  void _editJob(BuildContext context, String jobKey, Map<String, dynamic> jobDetails) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditJobPage(UID: UID, jobKey: jobKey, jobDetails: jobDetails),
-      ),
-    );
+  int _calculateRemainingDays(String deadline) {
+    final DateTime deadlineDate = DateFormat('yyyy-MM-dd').parse(deadline);
+    final DateTime currentDate = DateTime.now();
+    return deadlineDate.difference(currentDate).inDays;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Candidate HP'),
+        title: const Text('Candidate Homepage'),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _fetchJobsFromDatabase(),
@@ -60,6 +157,7 @@ class Homepagec extends StatelessWidget {
               itemCount: jobs.length,
               itemBuilder: (context, index) {
                 final job = jobs[index];
+                final int remainingDays = _calculateRemainingDays(job['deadline'] ?? '9999-12-31');
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: ListTile(
@@ -70,20 +168,21 @@ class Homepagec extends StatelessWidget {
                         Text('Stipend: ${job['stipend'] ?? 'N/A'}'),
                         Text('Duration: ${job['duration'] ?? 'N/A'} months'),
                         Text('Role: ${job['jobRole'] ?? 'N/A'}'),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Remaining Days: ${remainingDays >= 0 ? remainingDays : 'Deadline Passed'}',
+                          style: TextStyle(
+                            color: remainingDays >= 0 ? Colors.green : Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => _editJob(context, job['key'], job),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _deleteJob(job['key'], context),
-                        ),
-                      ],
+                    trailing: ElevatedButton(
+                      onPressed: remainingDays >= 0
+                          ? () => _applyForJob(context, job['companyUID'], job['key'])
+                          : null,
+                      child: const Text("Apply"),
                     ),
                     onTap: () {
                       Navigator.push(
@@ -113,14 +212,17 @@ class JobDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Job Details'),
+        title: Text(job['jobTitle'] ?? 'Job Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Title: ${job['jobTitle'] ?? 'No Title'}', style: const TextStyle(fontSize: 18)),
+            Text(
+              'Job Title: ${job['jobTitle'] ?? 'N/A'}',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             Text('Stipend: ${job['stipend'] ?? 'N/A'}'),
             const SizedBox(height: 8),
@@ -128,137 +230,12 @@ class JobDetailsPage extends StatelessWidget {
             const SizedBox(height: 8),
             Text('Role: ${job['jobRole'] ?? 'N/A'}'),
             const SizedBox(height: 8),
-            Text('No. of Positions: ${job['noOfPositions'] ?? 'N/A'}'),
+            Text('Job Description: ${job['jobDescription'] ?? 'N/A'}'),
             const SizedBox(height: 8),
-            Text('Location: ${job['location'] ?? 'N/A'}'),
-            const SizedBox(height: 8),
-            Text('Description: ${job['jobDescription'] ?? 'N/A'}'),
-            const SizedBox(height: 8),
-            Text('Skills Required: ${job['skillsRequired'] ?? 'N/A'}'),
+            Text('Deadline: ${job['deadline'] ?? 'N/A'}'),
           ],
         ),
       ),
-    );
-  }
-}
-
-class EditJobPage extends StatefulWidget {
-  final String UID;
-  final String jobKey;
-  final Map<String, dynamic> jobDetails;
-
-  const EditJobPage({
-    super.key,
-    required this.UID,
-    required this.jobKey,
-    required this.jobDetails,
-  });
-
-  @override
-  State<EditJobPage> createState() => _EditJobPageState();
-}
-
-class _EditJobPageState extends State<EditJobPage> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _stipendController = TextEditingController();
-  final TextEditingController _durationController = TextEditingController();
-  String _jobRole = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _titleController.text = widget.jobDetails['jobTitle'] ?? '';
-    _stipendController.text = widget.jobDetails['stipend'] ?? '';
-    _durationController.text = widget.jobDetails['duration']?.toString() ?? '';
-    _jobRole = widget.jobDetails['jobRole'] ?? 'Internship';
-  }
-
-  void _updateJob() async {
-    if (_formKey.currentState!.validate()) {
-      final updatedJob = {
-        'jobTitle': _titleController.text,
-        'stipend': _stipendController.text,
-        'duration': int.parse(_durationController.text),
-        'jobRole': _jobRole,
-      };
-
-      final dbRef = FirebaseDatabase.instance.ref('jobs/${widget.UID}/${widget.jobKey}');
-      await dbRef.update(updatedJob);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Job updated successfully!')),
-      );
-
-      Navigator.pop(context);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Job'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Job Title'),
-                validator: (value) => value == null || value.isEmpty ? 'Please enter job title' : null,
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _stipendController,
-                decoration: const InputDecoration(labelText: 'Stipend'),
-                validator: (value) => value == null || value.isEmpty ? 'Please enter stipend' : null,
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _durationController,
-                decoration: const InputDecoration(labelText: 'Duration (in months)'),
-                keyboardType: TextInputType.number,
-                validator: (value) => value == null || value.isEmpty ? 'Please enter duration' : null,
-              ),
-              const SizedBox(height: 16),
-              const Text('Job Role:'),
-              Row(
-                children: [
-                  _buildRadioOption('Internship'),
-                  _buildRadioOption('Full-time'),
-                  _buildRadioOption('Part-time'),
-                ],
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _updateJob,
-                child: const Text('Update'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRadioOption(String role) {
-    return Row(
-      children: [
-        Radio<String>(
-          value: role,
-          groupValue: _jobRole,
-          onChanged: (value) {
-            setState(() {
-              _jobRole = value!;
-            });
-          },
-        ),
-        Text(role),
-      ],
     );
   }
 }
