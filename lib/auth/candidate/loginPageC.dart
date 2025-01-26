@@ -4,7 +4,6 @@ import 'package:recroot/auth/interviewer/loginPageI.dart';
 import 'package:recroot/auth/recruiter/loginPageR.dart';
 
 import '../../screens/candidate/HomePageC.dart';
-import '../../screens/recruiter/HomePageR.dart';
 import 'SignUpC.dart';
 
 

@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:intl/intl.dart'; // For date formatting and calculations
-import 'package:file_picker/file_picker.dart'; // For file selection
-import 'dart:io'; // For working with files
+import 'package:intl/intl.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+import 'package:cloudinary/cloudinary.dart';
 
 class Homepagec extends StatelessWidget {
   final String UID;
 
-  const Homepagec({super.key, required this.UID});
+  Homepagec({super.key, required this.UID});
+
+  final cloudinary = Cloudinary.signedConfig(
+    apiKey: '858715427839214',
+    apiSecret: '9ag4M0yqcaJMAY2oSPQ0j6BDehE',
+    cloudName: 'dzvaf0hgm',
+  );
 
   Future<List<Map<String, dynamic>>> _fetchJobsFromDatabase() async {
     final DatabaseReference dbRef = FirebaseDatabase.instance.ref('jobs');
@@ -19,7 +26,7 @@ class Homepagec extends StatelessWidget {
           final jobData = job.value as Map<dynamic, dynamic>;
           jobs.add({
             'key': job.key,
-            'companyUID': userJobs.key,// Unique identifier for the job
+            'companyUID': userJobs.key,
             ...jobData,
           });
         });
@@ -27,6 +34,20 @@ class Homepagec extends StatelessWidget {
       return jobs;
     } else {
       return [];
+    }
+  }
+
+  Future<String?> _uploadFileToCloudinary(File file) async {
+    final response = await cloudinary.upload(
+      file: file.path,
+      resourceType: CloudinaryResourceType.auto,
+      folder: 'resumes',
+    );
+
+    if (response.isSuccessful) {
+      return response.secureUrl;
+    } else {
+      return null;
     }
   }
 
@@ -107,6 +128,16 @@ class Homepagec extends StatelessWidget {
                   return;
                 }
 
+                // Upload file to Cloudinary
+                final uploadedUrl = await _uploadFileToCloudinary(selectedResume!);
+                if (uploadedUrl == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to upload resume. Please try again.")),
+                  );
+                  return;
+                }
+
+                // Save application details in Firebase
                 final DatabaseReference dbRef = FirebaseDatabase.instance.ref(
                     'applications/$companyUID/$jobKey');
                 await dbRef.push().set({
@@ -114,9 +145,10 @@ class Homepagec extends StatelessWidget {
                   'whySuitable': whySuitableController.text,
                   'skills': skillsController.text,
                   'experience': experienceController.text,
-                  'resumePath': selectedResume!.path,
+                  'resumeUrl': uploadedUrl,
                   'appliedAt': DateTime.now().toIso8601String(),
                 });
+
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Applied successfully!")),
@@ -184,57 +216,12 @@ class Homepagec extends StatelessWidget {
                           : null,
                       child: const Text("Apply"),
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => JobDetailsPage(job: job),
-                        ),
-                      );
-                    },
                   ),
                 );
               },
             );
           }
         },
-      ),
-    );
-  }
-}
-
-class JobDetailsPage extends StatelessWidget {
-  final Map<String, dynamic> job;
-
-  const JobDetailsPage({super.key, required this.job});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(job['jobTitle'] ?? 'Job Details'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Job Title: ${job['jobTitle'] ?? 'N/A'}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text('Stipend: ${job['stipend'] ?? 'N/A'}'),
-            const SizedBox(height: 8),
-            Text('Duration: ${job['duration'] ?? 'N/A'} months'),
-            const SizedBox(height: 8),
-            Text('Role: ${job['jobRole'] ?? 'N/A'}'),
-            const SizedBox(height: 8),
-            Text('Job Description: ${job['jobDescription'] ?? 'N/A'}'),
-            const SizedBox(height: 8),
-            Text('Deadline: ${job['deadline'] ?? 'N/A'}'),
-          ],
-        ),
       ),
     );
   }
