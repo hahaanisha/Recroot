@@ -4,6 +4,7 @@ import 'package:recroot/auth/interviewer/loginPageI.dart';
 import 'package:recroot/auth/recruiter/loginPageR.dart';
 
 import '../../screens/candidate/HomePageC.dart';
+import '../../screens/candidate/bottomNavBarC.dart';
 import 'SignUpC.dart';
 
 
@@ -34,7 +35,7 @@ class _LoginPageCState extends State<LoginPageC> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Homepagec(UID: userUID),
+            builder: (context) => BottomNavBarC(candidateUID: userUID,),
           ),
         );
       }

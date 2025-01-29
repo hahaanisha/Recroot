@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../screens/recruiter/AddJobPageR.dart';
 import '../../screens/recruiter/HomePageR.dart';
 import '../../screens/recruiter/JobPageR.dart';
+import '../../screens/recruiter/bottomNavBarR.dart';
 import 'signUpR.dart';
 
 class LoginPager extends StatefulWidget {
@@ -33,7 +34,7 @@ class _LoginPagerState extends State<LoginPager> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => CompanyJobsPage(companyUID: userUID,),
+            builder: (context) => BottomNavBarR(companyUID: userUID,),
           ),
         );
       }
