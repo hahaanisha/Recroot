@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:cloudinary/cloudinary.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Homepagec extends StatelessWidget {
   final String UID;
@@ -46,6 +48,28 @@ class Homepagec extends StatelessWidget {
 
     if (response.isSuccessful) {
       return response.secureUrl;
+    } else {
+      return null;
+    }
+  }
+
+  Future<double?> _getAtsScore(String resumeUrl) async {
+    const String apiUrl = "https://flask-hello-world-d1ep.onrender.com/ats-score"; // Update with your API endpoint
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+      "resume_url": resumeUrl,
+      "job_desc": "Software Engineer with Python experience"
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data["ats_score"]; // Ensure your API returns `ats_score`
     } else {
       return null;
     }
@@ -137,6 +161,15 @@ class Homepagec extends StatelessWidget {
                   return;
                 }
 
+                // Get ATS Score from API
+                final atsScore = await _getAtsScore(uploadedUrl);
+                if (atsScore == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to retrieve ATS score.")),
+                  );
+                  return;
+                }
+
                 // Save application details in Firebase
                 final DatabaseReference dbRef = FirebaseDatabase.instance.ref(
                     'applications/$companyUID/$jobKey');
@@ -146,12 +179,13 @@ class Homepagec extends StatelessWidget {
                   'skills': skillsController.text,
                   'experience': experienceController.text,
                   'resumeUrl': uploadedUrl,
+                  'atsScore': atsScore, // Store ATS score in Firebase
                   'appliedAt': DateTime.now().toIso8601String(),
                 });
 
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Applied successfully!")),
+                  SnackBar(content: Text("Applied successfully!")),
                 );
               },
               child: const Text("Submit"),
@@ -200,14 +234,7 @@ class Homepagec extends StatelessWidget {
                         Text('Stipend: ${job['stipend'] ?? 'N/A'}'),
                         Text('Duration: ${job['duration'] ?? 'N/A'} months'),
                         Text('Role: ${job['jobRole'] ?? 'N/A'}'),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Remaining Days: ${remainingDays >= 0 ? remainingDays : 'Deadline Passed'}',
-                          style: TextStyle(
-                            color: remainingDays >= 0 ? Colors.green : Colors.red,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        Text('Remaining Days: ${remainingDays >= 0 ? remainingDays : 'Deadline Passed'}'),
                       ],
                     ),
                     trailing: ElevatedButton(

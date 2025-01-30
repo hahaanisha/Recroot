@@ -179,7 +179,7 @@ class _LoginPageCState extends State<LoginPageC> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Wanna to add your own company',
+                    'Add your own company',
                     style: TextStyle(color: Colors.black54),
                   ),
                   TextButton(
