@@ -29,8 +29,8 @@ class _BottomNavBarCState extends State<BottomNavBarC> {
     final List<Widget> _pages = [
       Homepagec(UID: widget.candidateUID,),
       CompanyJobsPage(companyUID: widget.candidateUID), // Pass companyUID here
-      DisplayJobsR(UID: widget.candidateUID,),
-      const ProfileScreen(),
+      // DisplayJobsR(UID: widget.candidateUID,),
+      // const ProfileScreen(),
     ];
 
     return Scaffold(
@@ -40,8 +40,8 @@ class _BottomNavBarCState extends State<BottomNavBarC> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.settings_applications), label: 'Applications'),
-          BottomNavigationBarItem(icon: Icon(Icons.all_inbox_outlined), label: 'All Jobs'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          // BottomNavigationBarItem(icon: Icon(Icons.all_inbox_outlined), label: 'All Jobs'),
+          // BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue,
