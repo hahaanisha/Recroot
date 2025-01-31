@@ -213,7 +213,7 @@ Recroot is an **all in one hiring solution** that simplifies recruitment for com
 
 # 📌 Contact & Contribution  
 
-👩‍💻 **Developed by:** [Tejas Gadge](https://github.com/tejasgadge2504)  
+👩‍💻 **Developed by:** [Tejas Gadge](https://github.com/tejasgadge2504) & [Anisha Shankar](https://github.com/hahaanisha)
 💡 **Contribute:** Fork the repo & submit a PR!  
 📧 **Feedback/Suggestions:** Open an issue on GitHub  
 
