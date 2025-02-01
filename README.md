@@ -1,8 +1,11 @@
 # 🚀 Recroot - AI-Powered Applicant Tracking System (ATS)
 
-![Recroot Logo](images/logo.png)
+<p align="center">
+    <img src="readmeIMAGES/logo.png" alt="Recroot Logo" width="300">
+</p>
 
-📺 **Watch the Demo:** [YouTube Video](https://youtube.com/your-video-link)
+
+📺 **Watch the Demo:** [YouTube Video](https://www.youtube.com/watch?v=u7HGmPe94FI&feature=youtu.be)
 
 **Recroot** is an advanced **Applicant Tracking System (ATS)** designed to streamline recruitment processes by automating **resume screening, job application tracking, interview scheduling, and offer letter management**.  
 
@@ -150,7 +153,10 @@ POST /add-application
 
 ## 📂 Firebase Database Structure  
 
-![Firebase Tables](images/firebase_db.png)  
+<p align="center">
+    <img src="readmeIMAGES/FirebaseAuth.png" alt="Recroot Logo" width="700">
+</p>
+
 
 ---
 
