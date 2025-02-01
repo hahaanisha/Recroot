@@ -1,4 +1,8 @@
-# 🚀 Recroot - Seamless Applicant Tracking System (ATS)
+# 🚀 Recroot - AI-Powered Applicant Tracking System (ATS)
+
+![Recroot Logo](images/logo.png)
+
+📺 **Watch the Demo:** [YouTube Video](https://youtube.com/your-video-link)
 
 **Recroot** is an advanced **Applicant Tracking System (ATS)** designed to streamline recruitment processes by automating **resume screening, job application tracking, interview scheduling, and offer letter management**.  
 
@@ -7,7 +11,7 @@ This documentation focuses on the **backend implementation, API development & de
 ---
 
 ## 📌 Features  
-✅ **ATS scoring** for resume-job description matching  
+✅ **AI-powered ATS scoring** for resume-job description matching  
 ✅ **Job application tracking** for recruiters & candidates  
 ✅ **Automated interview scheduling** with notifications  
 ✅ **Smart feedback collection** from interviewers  
@@ -17,17 +21,53 @@ This documentation focuses on the **backend implementation, API development & de
 
 ---
 
-# ⚙️ Backend Overview  
+# 🎨 Frontend Overview  
+
+## **🖥️ UI Screens**  
+✅ **Login Page** - Secure authentication system  
+✅ **Landing Page for Recruiters** - Manage job listings and applications  
+✅ **Landing Page for Candidates** - Apply for jobs and track applications  
+✅ **Landing Page for Interviewers** - Provide feedback and review candidates  
+
+### **🔹 UI Screenshots**
+
+| Candidate | Recruiter | Interviewer |
+|-----------|----------|-------------|
+| ![Candidate Page](images/candidate.png) | ![Recruiter Page](images/recruiter.png) | ![Interviewer Page](images/interviewer.png) |
+
+---
 
 ## 🛠️ Tech Stack  
 
+### **Backend**  
 - **Backend Framework:** Flask  
 - **Database:** Firebase (Real-time Database)  
 - **Storage:** Cloudinary (Resume Storage)  
 - **API Hosting:** Render  
 - **Language:** Python  
 
+### **Frontend**  
+**Built with Flutter** 🚀 
+
+#### **🔗 Flutter Plugins Used:**  
+- [cupertino_icons](https://pub.dev/packages/cupertino_icons): ^1.0.6  
+- [firebase_core](https://pub.dev/packages/firebase_core): ^3.10.1  
+- [firebase_auth](https://pub.dev/packages/firebase_auth): ^5.4.1  
+- [cloud_firestore](https://pub.dev/packages/cloud_firestore): ^5.6.2  
+- [firebase_database](https://pub.dev/packages/firebase_database): ^11.3.1  
+- [intl](https://pub.dev/packages/intl): ^0.20.2  
+- [firebase_storage](https://pub.dev/packages/firebase_storage): ^12.4.1  
+- [file_picker](https://pub.dev/packages/file_picker): ^8.1.7  
+- [http](https://pub.dev/packages/http): ^1.3.0  
+- [cloudinary](https://pub.dev/packages/cloudinary): ^1.2.0  
+- [url_launcher](https://pub.dev/packages/url_launcher): ^6.3.1  
+- [open_file](https://pub.dev/packages/open_file): ^3.0.3  
+- [pdf](https://pub.dev/packages/pdf): ^3.10.8  
+- [path_provider](https://pub.dev/packages/path_provider): ^2.1.5  
+
 ---
+
+# ⚙️ Backend Overview  
 
 ## 👀 API Endpoints  
 
@@ -108,13 +148,24 @@ POST /add-application
 
 ---
 
+## 📂 Firebase Database Structure  
+
+![Firebase Tables](images/firebase_db.png)  
+
+---
+
+## ☁️ Cloudinary Resume Storage  
+
+![Cloudinary Storage](images/cloudinary_storage.png)  
+
+---
+
 # 🚀 Deployment Guide  
 
-## 1️⃣ Backend API Deployment on Render  
+## **1️⃣ Backend API Deployment on Render**  
 
 ### **Step 1: Create a `requirements.txt` file**  
-Ensure the following dependencies are added:  
-```
+```txt
 flask
 requests
 pdfplumber
@@ -140,14 +191,14 @@ services:
 ```
 
 ### **Step 3: Push the project to GitHub**  
-```sh
+sh
 git init
 git add .
 git commit -m "Initial commit"
 git branch -M main
 git remote add origin https://github.com/your-repo/recroot
 git push -u origin main
-```
+
 
 ### **Step 4: Deploy on Render**  
 - Go to [Render](https://render.com/)  
@@ -168,12 +219,12 @@ git push -u origin main
 - Generate a **Private Key JSON** and download it  
 
 ### **Step 2: Install Firebase Admin SDK**  
-```sh
+sh
 pip install firebase-admin
-```
+
 
 ### **Step 3: Initialize Firebase in the Code**  
-```python
+python
 import firebase_admin
 from firebase_admin import credentials, db
 
@@ -181,42 +232,29 @@ cred = credentials.Certificate("firebase-admin-sdk.json")
 firebase_admin.initialize_app(cred, {
     'databaseURL': "https://your-database-url.firebaseio.com/"
 })
-```
+
 
 ### **Step 4: Storing Job Applications in Firebase**  
-```python
+python
 def store_application(data):
     ref = db.reference("/applications")
     ref.push(data)
     return {"message": "Application added successfully"}
-```
 
 ---
 
-# 🎨 Frontend Overview  
-
-## **🖥️ UI Screens**  
-✅ **Landing Page** - Displays job listings  
-✅ **Upload Resume** - Candidates upload resumes  
-✅ **ATS Score Page** - Shows matching score  
-✅ **Dashboard** - Track job applications  
-
----
 
 # 🏆 Conclusion  
 
-Recroot is an **all in one hiring solution** that simplifies recruitment for companies. With **Cloudinary for resume storage, Firebase for real-time data, and Render for seamless API deployment**, Recroot is built for **scalability, efficiency, and automation**.  
+Recroot is an **AI-powered hiring solution** that simplifies recruitment for companies. With **Cloudinary for resume storage, Firebase for real-time data, and Render for seamless API deployment**, Recroot is built for **scalability, efficiency, and automation**.  
 
 🚀 **Get started today and make hiring hassle-free!**  
 
 ---
 
 # 📌 Contact & Contribution  
-
-👩‍💻 **Developed by:** [Tejas Gadge](https://github.com/tejasgadge2504) & [Anisha Shankar](https://github.com/hahaanisha)  
+👩‍💻 **Developed by:** [Tejas Gadge](https://github.com/tejasgadge2504)  & [Anisha Shankar](https://github.com/hahaanisha) 
 💡 **Contribute:** Fork the repo & submit a PR!  
 📧 **Feedback/Suggestions:** Open an issue on GitHub  
 
----
-
-**⭐ If you like this project, don’t forget to give it a star on GitHub! ⭐**  
+**⭐ Star the project if you found it useful! ⭐**
