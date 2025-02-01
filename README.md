@@ -33,10 +33,20 @@ This documentation focuses on the **backend implementation, API development & de
 ✅ **Landing Page for Interviewers** - Provide feedback and review candidates  
 
 ### **🔹 UI Screenshots**
+#### 📌 Candidate View  
+<p align="center">
+    <img src="readmeIMAGES/canidate.png" alt="Candidate Page" width="400">
+</p>
 
-| Candidate | Recruiter | Interviewer |
-|-----------|----------|-------------|
-| ![Candidate Page](images/candidate.png) | ![Recruiter Page](images/recruiter.png) | ![Interviewer Page](images/interviewer.png) |
+#### 📌 Interviewer View  
+<p align="center">
+    <img src="readmeIMAGES/inter.png" alt="Recruiter Page" width="700">
+</p>
+
+#### 📌 Company/Recruiter View  
+<p align="center">
+    <img src="readmeIMAGES/Company.png" alt="Interviewer Page" width="900">
+</p>
 
 ---
 
@@ -154,7 +164,11 @@ POST /add-application
 ## 📂 Firebase Database Structure  
 
 <p align="center">
-    <img src="readmeIMAGES/FirebaseAuth.png" alt="Recroot Logo" width="700">
+    <img src="readmeIMAGES/FirebaseAuth.png" alt="FirebaseAuth" width="700">
+</p>
+
+<p align="center">
+    <img src="readmeIMAGES/firebaseRealTime.jpg" alt="firebaseRealTime" width="700">
 </p>
 
 
@@ -162,7 +176,9 @@ POST /add-application
 
 ## ☁️ Cloudinary Resume Storage  
 
-![Cloudinary Storage](images/cloudinary_storage.png)  
+<p align="center">
+    <img src="readmeIMAGES/cloudinary.jpg" alt="cloudinary" width="700">
+</p>
 
 ---
 
@@ -182,6 +198,10 @@ gunicorn
 ```
 
 ### **Step 2: Create a `render.yaml` file**  
+<p align="center">
+    <img src="readmeIMAGES/render.jpeg" alt="Recroot Logo" width="700">
+</p>
+
 ```yaml
 services:
   - type: web
@@ -202,7 +222,7 @@ git init
 git add .
 git commit -m "Initial commit"
 git branch -M main
-git remote add origin https://github.com/your-repo/recroot
+git remote add origin https://github.com/your-repo/Recroot
 git push -u origin main
 
 
@@ -259,7 +279,7 @@ Recroot is an **Seamless hiring solution** that simplifies recruitment for compa
 ---
 
 # 📌 Contact & Contribution  
-👩‍💻 **Developed by:** [Tejas Gadge](https://github.com/tejasgadge2504)  & [Anisha Shankar](https://github.com/hahaanisha) 
+👩‍💻 **Developed by:** [Tejas Gadge](https://github.com/tejasgadge2504)  & [Anisha Shankar](https://github.com/hahaanisha)   
 💡 **Contribute:** Fork the repo & submit a PR!  
 📧 **Feedback/Suggestions:** Open an issue on GitHub  
 
