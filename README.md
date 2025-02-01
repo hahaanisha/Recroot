@@ -1,4 +1,4 @@
-# 🚀 Recroot - AI-Powered Applicant Tracking System (ATS)
+# 🚀 Recroot - Smart Applicant Tracking System (ATS)
 
 <p align="center">
     <img src="readmeIMAGES/logo.png" alt="Recroot Logo" width="300">
@@ -14,7 +14,7 @@ This documentation focuses on the **backend implementation, API development & de
 ---
 
 ## 📌 Features  
-✅ **AI-powered ATS scoring** for resume-job description matching  
+✅ **ATS scoring** for resume-job description matching  
 ✅ **Job application tracking** for recruiters & candidates  
 ✅ **Automated interview scheduling** with notifications  
 ✅ **Smart feedback collection** from interviewers  
@@ -252,7 +252,7 @@ def store_application(data):
 
 # 🏆 Conclusion  
 
-Recroot is an **AI-powered hiring solution** that simplifies recruitment for companies. With **Cloudinary for resume storage, Firebase for real-time data, and Render for seamless API deployment**, Recroot is built for **scalability, efficiency, and automation**.  
+Recroot is an **Seamless hiring solution** that simplifies recruitment for companies. With **Cloudinary for resume storage, Firebase for real-time data, and Render for seamless API deployment**, Recroot is built for **scalability, efficiency, and automation**.  
 
 🚀 **Get started today and make hiring hassle-free!**  
 
